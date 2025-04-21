@@ -19,16 +19,61 @@ class _CrudScreenState extends State<CrudScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
 
+  String selectedCategory = 'Todas';
+  List<String> categories = ['Todas'];
+  List<String> _existingCategories = [];
+  String? _selectedExistingCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+    _loadExistingCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('presents').get();
+    final uniqueCategories =
+        snapshot.docs
+            .map((doc) => doc['category']?.toString() ?? '')
+            .where((category) => category.isNotEmpty)
+            .toSet()
+            .toList();
+
+    setState(() {
+      categories = ['Todas', ...uniqueCategories];
+    });
+  }
+
+  Future<void> _loadExistingCategories() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('presents').get();
+    final uniqueCategories =
+        snapshot.docs
+            .map((doc) => doc['category']?.toString() ?? '')
+            .where((category) => category.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
+
+    setState(() {
+      _existingCategories = uniqueCategories;
+    });
+  }
+
   void openPresentBox({
     String? docID,
     Map<String, dynamic>? existingData,
   }) async {
+    _selectedExistingCategory = null;
     if (existingData != null) {
       nameController.text = existingData['name'] ?? '';
       priceController.text = (existingData['price'] ?? '').toString();
       imagePathController.text = existingData['imagePath'] ?? '';
       quantityController.text = (existingData['quantity'] ?? '').toString();
       categoryController.text = existingData['category'] ?? '';
+      _selectedExistingCategory = existingData['category'];
     } else {
       nameController.clear();
       priceController.clear();
@@ -46,6 +91,7 @@ class _CrudScreenState extends State<CrudScreen> {
             ),
             content: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
                     controller: nameController,
@@ -67,9 +113,42 @@ class _CrudScreenState extends State<CrudScreen> {
                     decoration: const InputDecoration(labelText: "Quantidade"),
                     keyboardType: TextInputType.number,
                   ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Categoria:",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: "Selecionar Categoria Existente (opcional)",
+                      border: OutlineInputBorder(),
+                    ),
+                    value: _selectedExistingCategory,
+                    items:
+                        _existingCategories.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedExistingCategory = newValue;
+                        if (newValue != null) {
+                          categoryController.text = newValue;
+                        }
+                      });
+                    },
+                    isExpanded: true,
+                  ),
+                  const SizedBox(height: 12),
                   TextField(
                     controller: categoryController,
-                    decoration: const InputDecoration(labelText: "Categoria"),
+                    decoration: const InputDecoration(
+                      labelText: "Ou digite uma nova categoria",
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ],
               ),
@@ -82,7 +161,7 @@ class _CrudScreenState extends State<CrudScreen> {
                     price: double.tryParse(priceController.text) ?? 0.0,
                     imagePath: imagePathController.text,
                     quantity: int.tryParse(quantityController.text) ?? 0,
-                    category: categoryController.text,
+                    category: categoryController.text.trim(),
                   );
 
                   if (docID == null) {
@@ -119,14 +198,14 @@ class _CrudScreenState extends State<CrudScreen> {
                 hintStyle: TextStyle(color: Colors.grey[500]),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 196, 196, 196),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 196, 196, 196),
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 5, 104, 61),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 5, 104, 61),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
@@ -136,12 +215,61 @@ class _CrudScreenState extends State<CrudScreen> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  final isSelected = selectedCategory == category;
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: FilterChip(
+                      label: Text(category),
+                      selected: isSelected,
+                      selectedColor: const Color.fromARGB(255, 6, 112, 61),
+                      backgroundColor: Colors.white,
+                      labelStyle: TextStyle(
+                        color:
+                            isSelected
+                                ? Colors.white
+                                : const Color.fromARGB(255, 6, 112, 61),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: const Color.fromARGB(255, 6, 112, 61),
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      showCheckmark: false,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          selectedCategory = selected ? category : 'Todas';
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: firestoreService.getPresentsStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final docs = snapshot.data!.docs;
+                  final docs =
+                      snapshot.data!.docs.where((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        final category = data['category']?.toString() ?? '';
+                        return selectedCategory == 'Todas' ||
+                            category == selectedCategory;
+                      }).toList();
 
                   return ListView.builder(
                     itemCount: docs.length,
@@ -150,7 +278,11 @@ class _CrudScreenState extends State<CrudScreen> {
                       final data = doc.data() as Map<String, dynamic>;
 
                       return Container(
-                        margin: EdgeInsets.only(top: 10, left: 12, right: 12),
+                        margin: const EdgeInsets.only(
+                          top: 10,
+                          left: 12,
+                          right: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -196,7 +328,6 @@ class _CrudScreenState extends State<CrudScreen> {
                                   color: Color.fromARGB(255, 5, 104, 61),
                                 ),
                               ),
-
                               IconButton(
                                 onPressed:
                                     () =>
