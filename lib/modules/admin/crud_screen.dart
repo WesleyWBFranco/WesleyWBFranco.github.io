@@ -243,6 +243,7 @@ class _CrudScreenState extends State<CrudScreen> {
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           color: const Color.fromARGB(255, 6, 112, 61),
+                          width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),

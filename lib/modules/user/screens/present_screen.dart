@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lista_de_presentes/data/models/present.dart';
 import 'package:lista_de_presentes/modules/user/widgets/present_card.dart';
 
-class UserHomeScreen extends StatefulWidget {
-  const UserHomeScreen({super.key});
+class PresentScreen extends StatefulWidget {
+  const PresentScreen({super.key});
 
   @override
-  State<UserHomeScreen> createState() => _UserHomeScreenState();
+  State<PresentScreen> createState() => _PresentScreenState();
 }
 
-class _UserHomeScreenState extends State<UserHomeScreen> {
+class _PresentScreenState extends State<PresentScreen> {
   String selectedCategory = 'Todos';
   List<String> categories = ['Todos'];
 
@@ -38,7 +38,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: Column(
         children: [
           Padding(
@@ -56,7 +56,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 6, 112, 61),
+                    color: const Color.fromARGB(255, 39, 93, 80),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
@@ -83,18 +83,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     child: FilterChip(
                       label: Text(category),
                       selected: isSelected,
-                      selectedColor: const Color.fromARGB(255, 6, 112, 61),
+                      selectedColor: const Color.fromARGB(255, 39, 93, 80),
                       backgroundColor: Colors.white,
                       labelStyle: TextStyle(
                         color:
                             isSelected
                                 ? Colors.white
-                                : const Color.fromARGB(255, 6, 112, 61),
+                                : const Color.fromARGB(255, 39, 93, 80),
                         fontWeight: FontWeight.bold,
                       ),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
-                          color: const Color.fromARGB(255, 6, 112, 61),
+                          color: const Color.fromARGB(255, 39, 93, 80),
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20),

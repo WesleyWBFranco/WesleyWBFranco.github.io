@@ -10,9 +10,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => CartService()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => CartService())],
       child: const MyApp(),
     ),
   );

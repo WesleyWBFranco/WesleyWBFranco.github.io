@@ -4,7 +4,7 @@ import 'package:lista_de_presentes/modules/admin/crud_screen.dart';
 import 'package:lista_de_presentes/modules/user/screens/about_screen.dart';
 import 'package:lista_de_presentes/modules/user/screens/cart_screen.dart';
 import 'package:lista_de_presentes/modules/user/screens/user_feedback_screen.dart';
-import 'package:lista_de_presentes/modules/user/screens/user_home_screen.dart';
+import 'package:lista_de_presentes/modules/user/screens/present_screen.dart';
 
 class StandardScreen extends StatefulWidget {
   const StandardScreen({super.key});
@@ -16,19 +16,19 @@ class StandardScreen extends StatefulWidget {
 class _StandardScreenState extends State<StandardScreen> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
-    const UserHomeScreen(), // Índice 0 - Home
-    const CartScreen(), // Índice 1 - Cart
-    const UserFeedbackScreen(), //Índice 2 - Feedback
-    const AboutScreen(), //índice 3 - About
-    const CrudScreen(), //índice 4 - Crud
+    const PresentScreen(),
+    const CartScreen(),
+    const UserFeedbackScreen(),
+    const AboutScreen(),
+    const CrudScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 4, 71, 28),
+        backgroundColor: const Color.fromARGB(255, 39, 93, 80),
         elevation: 0,
         leading: Builder(
           builder:

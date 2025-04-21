@@ -36,7 +36,7 @@ class _PresentCardState extends State<PresentCard> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide(
-              color: const Color.fromARGB(255, 5, 104, 61),
+              color: const Color.fromARGB(255, 39, 93, 80),
               width: 2,
             ),
           ),
@@ -106,7 +106,7 @@ class _PresentCardState extends State<PresentCard> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: const BorderSide(
-                                color: Color.fromARGB(255, 5, 104, 61),
+                                color: Color.fromARGB(255, 39, 93, 80),
                                 width: 2,
                               ),
                             ),
@@ -114,7 +114,7 @@ class _PresentCardState extends State<PresentCard> {
                               onPressed: null,
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(
-                                  color: Color.fromARGB(255, 5, 104, 61),
+                                  color: Color.fromARGB(255, 39, 93, 80),
                                   width: 2,
                                 ),
                                 shape: RoundedRectangleBorder(
@@ -127,7 +127,7 @@ class _PresentCardState extends State<PresentCard> {
                               child: Text(
                                 'Quantidade: $selectedQuantity',
                                 style: const TextStyle(
-                                  color: Color.fromARGB(255, 5, 104, 61),
+                                  color: Color.fromARGB(255, 39, 93, 80),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -140,7 +140,7 @@ class _PresentCardState extends State<PresentCard> {
                           Text(
                             'Disponível: ${widget.present.quantity}',
                             style: const TextStyle(
-                              color: Color.fromARGB(255, 5, 104, 61),
+                              color: Color.fromARGB(255, 39, 93, 80),
                               fontWeight: FontWeight.w500,
                               fontSize: 10,
                             ),
@@ -211,11 +211,11 @@ class _PresentCardState extends State<PresentCard> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
+                                    backgroundColor: Color.fromARGB(
                                       255,
-                                      5,
-                                      104,
-                                      61,
+                                      39,
+                                      93,
+                                      80,
                                     ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
