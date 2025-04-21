@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817523830758",
+    "project_id": "lista-casamento-fb6aa",
+    "storage_bucket": "lista-casamento-fb6aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817523830758:android:29c0077ca5d5ccebe9f027",
+        "android_client_info": {
+          "package_name": "com.example.lista_de_presentes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1bXPd4JJBYm8pAoBu3G902K4fJogzZHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
