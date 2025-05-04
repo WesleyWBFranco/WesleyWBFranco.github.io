@@ -1,8 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lista_de_presentes/common/forgot_pw_screen.dart';
+import 'package:lista_de_presentes/helper/helper_function.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  final void Function()? onTap;
+
+  const LoginScreen({super.key, required this.onTap});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void login() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      displayMessageToUser(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,72 +38,91 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                FontAwesomeIcons.gift,
-                color: const Color.fromARGB(255, 39, 93, 80),
-                size: 60,
+              Image.asset(
+                'assets/images/presente.png',
+                color: Color.fromARGB(255, 39, 93, 80),
+                width: 130,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'LOGIN',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+                style: GoogleFonts.cormorantSc(
                   color: Color.fromARGB(255, 39, 93, 80),
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Bem vindo ao nosso Casamento',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color.fromARGB(255, 39, 93, 80),
+              Text(
+                'Wesley e  Jenifer',
+                style: GoogleFonts.italianno(
+                  color: Color.fromARGB(255, 200, 81, 3),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
                 ),
               ),
-              const SizedBox(height: 32),
 
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
+              Padding(
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   children: [
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 39, 93, 80),
-                          fontWeight: FontWeight.w500,
+                        labelStyle: GoogleFonts.cormorantSc(
+                          color: const Color.fromARGB(255, 39, 93, 80),
+                          fontWeight: FontWeight.w700,
                         ),
                         prefixIcon: Icon(
                           Icons.email_outlined,
                           color: Color.fromARGB(255, 39, 93, 80),
                         ),
-                        border: OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 39, 93, 80),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 39, 93, 80),
+                            width: 2,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Senha',
-                        labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 39, 93, 80),
-                          fontWeight: FontWeight.w500,
+                        labelStyle: GoogleFonts.cormorantSc(
+                          color: const Color.fromARGB(255, 39, 93, 80),
+                          fontWeight: FontWeight.w700,
                         ),
                         prefixIcon: Icon(
                           Icons.lock_outline,
                           color: Color.fromARGB(255, 39, 93, 80),
                         ),
-                        border: OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 39, 93, 80),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 39, 93, 80),
+                            width: 2,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 24),
 
                     SizedBox(
@@ -92,16 +135,42 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () {},
-                        child: const Text(
+                        onPressed: login,
+                        child: Text(
                           'Entrar',
-                          style: TextStyle(
+                          style: GoogleFonts.cormorantSc(
+                            color: Color.fromARGB(255, 253, 243, 222),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 253, 243, 222),
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ForgotPasswordPage();
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Esqueceu a senha?',
+                            style: GoogleFonts.cormorantSc(
+                              color: Color.fromARGB(255, 39, 93, 80),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -110,20 +179,23 @@ class LoginScreen extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Ainda não tem uma conta?',
-                    style: TextStyle(color: Color.fromARGB(255, 39, 93, 80)),
+                    style: GoogleFonts.cormorantSc(
+                      color: Color.fromARGB(255, 39, 93, 80),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
 
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/register');
-                    },
-                    child: const Text(
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: Text(
                       'Cadastre-se',
-                      style: TextStyle(
+                      style: GoogleFonts.cormorantSc(
                         color: Color.fromARGB(255, 39, 93, 80),
-                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lista_de_presentes/data/models/present.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lista_de_presentes/services/cart_services.dart';
@@ -31,7 +32,7 @@ class _PresentCardState extends State<PresentCard> {
     return Stack(
       children: [
         Card(
-          color: Colors.white,
+          color: Color.fromARGB(255, 253, 243, 222),
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -41,46 +42,49 @@ class _PresentCardState extends State<PresentCard> {
             ),
           ),
           margin: const EdgeInsets.all(10),
-          child: Opacity(
-            opacity: isComplete ? 0.5 : 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(8),
-                  ),
-                  child: SizedBox(
-                    height: widget.imageHeight,
-                    width: double.infinity,
-                    child:
-                        widget.present.imagePath.isNotEmpty
-                            ? Image.network(
-                              widget.present.imagePath,
-                              fit: BoxFit.scaleDown,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Center(
-                                  child: Icon(Icons.image_not_supported),
-                                );
-                              },
-                            )
-                            : const Center(child: Icon(Icons.image)),
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(8),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.present.name,
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                child: SizedBox(
+                  height: widget.imageHeight,
+                  width: double.infinity,
+                  child:
+                      widget.present.imagePath.isNotEmpty
+                          ? Image.network(
+                            widget.present.imagePath,
+                            fit: BoxFit.scaleDown,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(Icons.image_not_supported),
+                              );
+                            },
+                          )
+                          : const Center(child: Icon(Icons.image)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.present.name,
+                      style: GoogleFonts.cormorantSc(
+                        color: Color.fromARGB(255, 39, 93, 80),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
                       ),
-                      const SizedBox(height: 8),
-                      if (!isComplete)
-                        SizedBox(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    isComplete
+                        ? SizedBox(height: 50)
+                        : SizedBox(
                           width: double.infinity,
                           child: PopupMenuButton<int>(
                             onSelected: (value) {
@@ -98,11 +102,18 @@ class _PresentCardState extends State<PresentCard> {
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 20,
                                   ),
-                                  child: Text('Quantidade: $quantity'),
+                                  child: Text(
+                                    'Quantidade: $quantity',
+                                    style: GoogleFonts.cormorantSc(
+                                      color: Color.fromARGB(255, 39, 93, 80),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 );
                               });
                             },
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 253, 243, 222),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: const BorderSide(
@@ -126,136 +137,139 @@ class _PresentCardState extends State<PresentCard> {
                               ),
                               child: Text(
                                 'Quantidade: $selectedQuantity',
-                                style: const TextStyle(
+                                style: GoogleFonts.cormorantSc(
                                   color: Color.fromARGB(255, 39, 93, 80),
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Disponível: ${widget.present.quantity}',
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 39, 93, 80),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 10,
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Disponível: ${widget.present.quantity}',
+                          style: GoogleFonts.rajdhani(
+                            color: Color.fromARGB(255, 39, 93, 80),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'R\$ ${totalPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'R\$ ${totalPrice.toStringAsFixed(2)}',
+                      style: GoogleFonts.rajdhani(
+                        color: Color.fromARGB(255, 39, 93, 80),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child:
-                            isComplete
-                                ? ElevatedButton.icon(
-                                  onPressed: null,
-                                  icon: const Icon(
-                                    Icons.check_circle_outline,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                  label: const Text(
-                                    'Presenteado',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.grey,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                  ),
-                                )
-                                : ElevatedButton.icon(
-                                  onPressed: () {
-                                    final cart = Provider.of<CartService>(
-                                      context,
-                                      listen: false,
-                                    );
-                                    cart.addToCart(
-                                      widget.present,
-                                      widget.documentId,
-                                      selectedQuantity,
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Adicionado ao carrinho!',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    FontAwesomeIcons.gift,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                  label: const Text(
-                                    'Presentear',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color.fromARGB(
-                                      255,
-                                      39,
-                                      93,
-                                      80,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child:
+                          isComplete
+                              ? ElevatedButton.icon(
+                                onPressed: null,
+                                icon: const Icon(
+                                  Icons.check_circle_outline,
+                                  color: Color.fromARGB(255, 39, 93, 80),
+                                  size: 16,
+                                ),
+                                label: Text(
+                                  'Presenteado',
+                                  style: GoogleFonts.cormorantSc(
+                                    color: Color.fromARGB(255, 39, 93, 80),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                      ),
-                    ],
-                  ),
+                                style: ElevatedButton.styleFrom(
+                                  disabledBackgroundColor: Color.fromARGB(
+                                    255,
+                                    253,
+                                    243,
+                                    222,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: BorderSide(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        39,
+                                        93,
+                                        80,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                ),
+                              )
+                              : ElevatedButton.icon(
+                                onPressed: () {
+                                  final cart = Provider.of<CartService>(
+                                    context,
+                                    listen: false,
+                                  );
+                                  cart.addToCart(
+                                    widget.present,
+                                    widget.documentId,
+                                    selectedQuantity,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Adicionado ao carrinho!'),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  FontAwesomeIcons.gift,
+                                  color: Color.fromARGB(255, 253, 243, 222),
+                                  size: 16,
+                                ),
+                                label: Text(
+                                  'Presentear',
+                                  style: GoogleFonts.cormorantSc(
+                                    color: Color.fromARGB(255, 253, 243, 222),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color.fromARGB(
+                                    255,
+                                    39,
+                                    93,
+                                    80,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                ),
+                              ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
 
-        // Banner de presente completo
         if (isComplete)
-          Positioned(
-            top: 12,
-            left: -30,
-            child: Transform.rotate(
-              angle: -0.5,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 4,
-                ),
-                color: Colors.green.shade700,
-                child: const Text(
-                  'COMPLETO',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset('assets/images/laço.png'),
             ),
           ),
       ],

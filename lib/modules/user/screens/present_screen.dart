@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lista_de_presentes/common/widgets/standard_screen.dart';
 import 'package:lista_de_presentes/data/models/present.dart';
 import 'package:lista_de_presentes/modules/user/widgets/present_card.dart';
+import 'package:provider/provider.dart';
+import 'package:lista_de_presentes/services/cart_services.dart';
 
 class PresentScreen extends StatefulWidget {
   const PresentScreen({super.key});
@@ -13,11 +17,19 @@ class PresentScreen extends StatefulWidget {
 class _PresentScreenState extends State<PresentScreen> {
   String selectedCategory = 'Todos';
   List<String> categories = ['Todos'];
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _loadCategories();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _loadCategories() async {
@@ -37,6 +49,9 @@ class _PresentScreenState extends State<PresentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartService = Provider.of<CartService>(context);
+    final cartItemCount = cartService.items.length;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -44,29 +59,38 @@ class _PresentScreenState extends State<PresentScreen> {
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
               decoration: InputDecoration(
                 hintText: 'Pesquisar por nome ou preço',
-                hintStyle: TextStyle(color: Colors.grey[500]),
+                hintStyle: GoogleFonts.cormorantSc(
+                  color: Colors.grey[500],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 196, 196, 196),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 196, 196, 196),
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 39, 93, 80),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 39, 93, 80),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                fillColor: Colors.white,
+                fillColor: const Color.fromARGB(255, 253, 243, 222),
                 filled: true,
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -84,17 +108,18 @@ class _PresentScreenState extends State<PresentScreen> {
                       label: Text(category),
                       selected: isSelected,
                       selectedColor: const Color.fromARGB(255, 39, 93, 80),
-                      backgroundColor: Colors.white,
-                      labelStyle: TextStyle(
+                      backgroundColor: const Color.fromARGB(255, 253, 243, 222),
+                      labelStyle: GoogleFonts.cormorantSc(
                         color:
                             isSelected
-                                ? Colors.white
+                                ? const Color.fromARGB(255, 253, 243, 222)
                                 : const Color.fromARGB(255, 39, 93, 80),
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: const Color.fromARGB(255, 39, 93, 80),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 39, 93, 80),
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20),
@@ -111,7 +136,6 @@ class _PresentScreenState extends State<PresentScreen> {
               ),
             ),
           ),
-
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
@@ -145,8 +169,15 @@ class _PresentScreenState extends State<PresentScreen> {
                         })
                         .where(
                           (present) =>
-                              selectedCategory == 'Todos' ||
-                              present.category == selectedCategory,
+                              (selectedCategory == 'Todos' ||
+                                  present.category == selectedCategory) &&
+                              (present.name.toLowerCase().contains(
+                                    _searchQuery,
+                                  ) ||
+                                  present.price
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(_searchQuery)),
                         )
                         .toList();
 
@@ -170,6 +201,33 @@ class _PresentScreenState extends State<PresentScreen> {
           ),
         ],
       ),
+      floatingActionButton:
+          cartItemCount > 0
+              ? FloatingActionButton(
+                onPressed: () {
+                  final standardScreenState =
+                      context.findAncestorStateOfType<StandardScreenState>();
+                  if (standardScreenState != null) {
+                    standardScreenState.changePage(2, fromDrawer: false);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StandardScreen(),
+                      ),
+                    );
+                  }
+                },
+                backgroundColor: const Color.fromARGB(255, 39, 93, 80),
+                child: Image.asset(
+                  'assets/images/carrinho2.png',
+                  width: 30,
+                  height: 30,
+                  color: const Color.fromARGB(255, 253, 243, 222),
+                ),
+              )
+              : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

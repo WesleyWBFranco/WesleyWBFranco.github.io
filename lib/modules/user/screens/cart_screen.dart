@@ -1,194 +1,529 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lista_de_presentes/services/cart_services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lista_de_presentes/common/widgets/standard_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:lottie/lottie.dart';
+import 'package:lista_de_presentes/services/cart_services.dart';
+import 'package:flutter/services.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  bool _isConfirming = false;
+  OverlayEntry? _confirmationOverlay;
+
+  Future<void> _confirmCart(
+    BuildContext context,
+    CartService cartService,
+  ) async {
+    setState(() {
+      _isConfirming = true;
+    });
+
+    try {
+      await cartService.savePurchaseHistory();
+      await cartService.confirmPurchaseAndUpdateFirebase();
+      if (mounted) {
+        _showConfirmationAnimation(context);
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao confirmar a compra: $error')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isConfirming = false;
+        });
+      }
+    }
+  }
+
+  void _showConfirmationAnimation(BuildContext context) {
+    _confirmationOverlay = OverlayEntry(
+      builder:
+          (context) => Container(
+            color: const Color.fromARGB(255, 253, 243, 222),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  _hideConfirmationAnimation();
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      'assets/animations/confirm.json',
+                      width: 350,
+                      height: 350,
+                      repeat: false,
+                    ),
+                    const SizedBox(height: 50),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Obrigado por fazer parte do nosso Sonho!',
+                        style: GoogleFonts.cormorantSc(
+                          color: const Color.fromARGB(255, 39, 93, 80),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+    );
+
+    Overlay.of(context).insert(_confirmationOverlay!);
+
+    Future.delayed(const Duration(seconds: 5), () {
+      _hideConfirmationAnimation();
+    });
+  }
+
+  void _hideConfirmationAnimation() {
+    if (_confirmationOverlay != null) {
+      _confirmationOverlay?.remove();
+      _confirmationOverlay = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<CartService>(context);
-    final total = cart.items.fold<double>(
+    final cartService = Provider.of<CartService>(context);
+    final cartItems = cartService.items;
+    final totalAmount = cartItems.fold<double>(
       0,
       (sum, item) => sum + (item.present.price * item.selectedQuantity),
     );
 
+    final cartScreenContext = context;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: ListView(
-        padding: const EdgeInsets.only(
-          bottom: 100,
-        ), 
-        children:
-            cart.items.map((item) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: const Color.fromARGB(255, 5, 104, 61),
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      item.present.imagePath,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  title: Text(
-                    item.present.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    'R\$ ${(item.present.price * item.selectedQuantity).toStringAsFixed(2)}',
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.remove,
-                          color: Color.fromARGB(255, 5, 104, 61),
-                        ),
-                        onPressed: () => cart.decreaseQuantity(item),
-                      ),
-                      Text('${item.selectedQuantity}'),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.add,
-                          color: Color.fromARGB(255, 5, 104, 61),
-                        ),
-                        onPressed: () => cart.increaseQuantity(item),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 5, 104, 61),
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder:
-                  (context) => AlertDialog(
-                    title: const Text('Confirmar Presentes'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Total: R\$ ${total.toStringAsFixed(2)}'),
-                        const SizedBox(height: 12),
-                        const Text('Chave Pix:'),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: SelectableText(
-                                '08699181922',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            TextButton.icon(
-                              onPressed: () async {
-                                await Clipboard.setData(
-                                  const ClipboardData(
-                                    text: 'sua_chave_pix_aqui',
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Chave Pix copiada!'),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.copy),
-                              label: const Text('Copiar Chave'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        child: const Text('Cancelar'),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      TextButton(
-                        child: const Text('Confirmar'),
-                        onPressed: () async {
-                          final cart = Provider.of<CartService>(
-                            context,
-                            listen: false,
-                          );
-
-                          final List<Map<String, dynamic>> itemsData =
-                              cart.items.map((item) {
-                                return {
-                                  'name': item.present.name,
-                                  'price': item.present.price,
-                                  'quantity': item.selectedQuantity,
-                                  'total':
-                                      item.present.price *
-                                      item.selectedQuantity,
-                                };
-                              }).toList();
-
-                          final double totalPrice = itemsData.fold<double>(
-                            0,
-                            (sum, item) => sum + (item['total'] as double),
-                          );
-
-                          Navigator.pop(context);
-                          await cart.confirmPurchaseAndUpdateFirebase();
-                          final firestore = FirebaseFirestore.instance;
-                          await firestore.collection('compras').add({
-                            'items': itemsData,
-                            'total': totalPrice,
-                            'timestamp': FieldValue.serverTimestamp(),
-                          });
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Presentes confirmados!'),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-            );
-          },
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Center(
           child: Text(
-            'Confirmar - Total R\$ ${total.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            'Seu Carrinho',
+            style: GoogleFonts.cormorantSc(
+              color: const Color.fromARGB(255, 39, 93, 80),
+              fontSize: 30,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ),
       ),
+      body:
+          cartItems.isEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/presente_vazio.png',
+                      width: 250,
+                      height: 250,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Seu carrinho está vazio.',
+                      style: GoogleFonts.cormorantSc(
+                        color: const Color.fromARGB(255, 39, 93, 80),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 100),
+                itemCount: cartItems.length,
+                itemBuilder: (context, index) {
+                  final item = cartItems[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 253, 243, 222),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 5, 104, 61),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.network(
+                          item.present.imagePath,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                      title: Text(
+                        item.present.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.cormorantSc(
+                          color: const Color.fromARGB(255, 39, 93, 80),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'R\$ ${(item.present.price * item.selectedQuantity).toStringAsFixed(2)}',
+                        style: GoogleFonts.rajdhani(
+                          color: const Color.fromARGB(255, 39, 93, 80),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.remove,
+                              color: Color.fromARGB(255, 5, 104, 61),
+                            ),
+                            onPressed: () => cartService.decreaseQuantity(item),
+                          ),
+                          Text(
+                            '${item.selectedQuantity}',
+                            style: GoogleFonts.rajdhani(
+                              color: const Color.fromARGB(255, 39, 93, 80),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.add,
+                              color: Color.fromARGB(255, 5, 104, 61),
+                            ),
+                            onPressed: () => cartService.increaseQuantity(item),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:
+          cartItems.isEmpty
+              ? SizedBox(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 39, 93, 80),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    final standardScreenState =
+                        context.findAncestorStateOfType<StandardScreenState>();
+                    if (standardScreenState != null) {
+                      standardScreenState.changePage(1, fromDrawer: false);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StandardScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Ver Lista de Presentes',
+                        style: GoogleFonts.cormorantSc(
+                          color: const Color.fromARGB(255, 253, 243, 222),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              : SizedBox(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 39, 93, 80),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                backgroundColor: const Color.fromARGB(
+                                  255,
+                                  253,
+                                  243,
+                                  222,
+                                ),
+                                title: Text(
+                                  'Confirmar Presentes',
+                                  style: GoogleFonts.cormorantSc(
+                                    color: const Color.fromARGB(
+                                      255,
+                                      39,
+                                      93,
+                                      80,
+                                    ),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 24),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Pix:  ',
+                                          style: GoogleFonts.rajdhani(
+                                            color: const Color.fromARGB(
+                                              255,
+                                              39,
+                                              93,
+                                              80,
+                                            ),
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        SelectableText(
+                                          '08699181922',
+                                          style: GoogleFonts.rajdhani(
+                                            color: const Color.fromARGB(
+                                              255,
+                                              39,
+                                              93,
+                                              80,
+                                            ),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        TextButton.icon(
+                                          onPressed: () async {
+                                            await Clipboard.setData(
+                                              const ClipboardData(
+                                                text: '08699181922',
+                                              ),
+                                            );
+                                            if (cartScreenContext.mounted) {
+                                              ScaffoldMessenger.of(
+                                                cartScreenContext,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Chave Pix copiada!',
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          icon: const Icon(
+                                            Icons.copy,
+                                            color: Color.fromARGB(
+                                              255,
+                                              39,
+                                              93,
+                                              80,
+                                            ),
+                                          ),
+                                          label: Text(
+                                            'Copiar Chave',
+                                            style: GoogleFonts.rajdhani(
+                                              color: const Color.fromARGB(
+                                                255,
+                                                39,
+                                                93,
+                                                80,
+                                              ),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Text(
+                                      'Total: R\$ ${totalAmount.toStringAsFixed(2)}',
+                                      style: GoogleFonts.rajdhani(
+                                        color: const Color.fromARGB(
+                                          255,
+                                          39,
+                                          93,
+                                          80,
+                                        ),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                  ],
+                                ),
+                                actions: [
+                                  SizedBox(
+                                    width: 130,
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                        side: MaterialStateProperty.all<
+                                          BorderSide
+                                        >(
+                                          const BorderSide(
+                                            color: Color.fromARGB(
+                                              255,
+                                              39,
+                                              93,
+                                              80,
+                                            ),
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Cancelar',
+                                        style: GoogleFonts.cormorantSc(
+                                          color: const Color.fromARGB(
+                                            255,
+                                            39,
+                                            93,
+                                            80,
+                                          ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 130,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(
+                                          255,
+                                          39,
+                                          93,
+                                          80,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Confirmar',
+                                        style: GoogleFonts.cormorantSc(
+                                          color: const Color.fromARGB(
+                                            255,
+                                            253,
+                                            243,
+                                            222,
+                                          ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        await _confirmCart(
+                                          cartScreenContext,
+                                          cartService,
+                                        ); // Use o contexto capturado
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _isConfirming
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color.fromARGB(255, 253, 243, 222),
+                                  ),
+                                ),
+                              )
+                              : Row(
+                                children: [
+                                  Text(
+                                    'Confirmar - ',
+                                    style: GoogleFonts.cormorantSc(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        253,
+                                        243,
+                                        222,
+                                      ),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'R\$ ${totalAmount.toStringAsFixed(2)}',
+                                    style: GoogleFonts.rajdhani(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        253,
+                                        243,
+                                        222,
+                                      ),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
     );
   }
 }

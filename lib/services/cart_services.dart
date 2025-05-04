@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_de_presentes/data/models/cart_item.dart';
 import 'package:lista_de_presentes/data/models/present.dart';
@@ -25,7 +26,13 @@ class CartService extends ChangeNotifier {
     } else {
       final safeQuantity =
           quantity > present.quantity ? present.quantity : quantity;
-      _items.add(CartItem(present: present, presentId: presentId, selectedQuantity: safeQuantity)); // Adicione presentId
+      _items.add(
+        CartItem(
+          present: present,
+          presentId: presentId,
+          selectedQuantity: safeQuantity,
+        ),
+      );
     }
 
     notifyListeners();
@@ -52,7 +59,7 @@ class CartService extends ChangeNotifier {
     for (final item in _items) {
       final docRef = FirebaseFirestore.instance
           .collection('presents')
-          .doc(item.presentId); // Use item.presentId
+          .doc(item.presentId);
 
       final doc = await docRef.get();
       if (doc.exists) {
@@ -72,9 +79,22 @@ class CartService extends ChangeNotifier {
 
   Future<void> savePurchaseHistory() async {
     final purchasesRef = FirebaseFirestore.instance.collection('compras');
+    final user = FirebaseAuth.instance.currentUser;
+    String? userName;
+
+    if (user != null) {
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+      userName = userDoc.data()?['name'] as String?;
+    }
+
+    final currentItems = List<CartItem>.from(_items);
 
     final purchaseItems =
-        _items
+        currentItems
             .map(
               (item) => {
                 'name': item.present.name,
@@ -86,12 +106,13 @@ class CartService extends ChangeNotifier {
             )
             .toList();
 
-    final totalAmount = _items.fold<double>(
+    final totalAmount = currentItems.fold<double>(
       0,
       (sum, item) => sum + (item.present.price * item.selectedQuantity),
     );
 
     await purchasesRef.add({
+      'userName': userName,
       'items': purchaseItems,
       'total': totalAmount,
       'timestamp': FieldValue.serverTimestamp(),
