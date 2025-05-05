@@ -71749,7 +71749,7 @@ s=this.b
 return s*(B.f.i2(a-1,this.a)+1)-(s-this.d)}}
 A.alR.prototype={}
 A.alS.prototype={
-Mh(a){var s=Math.max(0,a.w)/2,r=s/0.53
+Mh(a){var s=Math.max(0,a.w)/2,r=s/0.5
 return new A.alV(2,r+0,s+0,r,s,A.yQ(a.x))}}
 A.wI.prototype={
 k(a){return"crossAxisOffset="+A.k(this.w)+"; "+this.a4e(0)}}

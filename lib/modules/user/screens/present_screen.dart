@@ -185,7 +185,7 @@ class _PresentScreenState extends State<PresentScreen> {
                   itemCount: presents.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.53,
+                    childAspectRatio: 0.5,
                   ),
                   itemBuilder: (context, index) {
                     final present = presents[index];
