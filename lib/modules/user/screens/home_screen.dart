@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _timer;
   Duration _timeLeft = const Duration();
 
-  final DateTime weddingDate = DateTime(2025, 10, 11, 20, 0);
+  final DateTime weddingDate = DateTime(2025, 10, 11, 17, 0);
 
   @override
   void initState() {
@@ -77,15 +77,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  'Sabemos que o maior presente é ter vocês conosco neste dia tão especial — e, de coração, não esperamos nada além da presença, do carinho e das orações de cada um.\n'
-                  'Mas também entendemos que presentear é uma forma bonita e tradicional de demonstrar amor. Por isso, caso sintam-se tocados a nos abençoar dessa forma, criamos uma lista simbólica com algumas sugestões.\n'
-                  'Os itens aparecem como objetos (como geladeira, sofá, entre outros), mas, na prática, os valores correspondentes serão enviados via Pix, diretamente a nós, e usados conforme as necessidades e sonhos da nossa nova caminhada juntos.\n',
+                RichText(
                   textAlign: TextAlign.justify,
-                  style: GoogleFonts.cormorantSc(
-                    color: Color.fromARGB(255, 39, 93, 80),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                  text: TextSpan(
+                    style: GoogleFonts.cormorantSc(
+                      color: Color.fromARGB(255, 39, 93, 80),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: '    ',
+                      ), // Indentação do primeiro parágrafo
+                      TextSpan(
+                        text:
+                            'Queremos começar dizendo que sua presença no nosso casamento já é, de verdade, um presente imenso para nós.\n\n',
+                      ),
+                      TextSpan(text: '    '), // Indentação do segundo parágrafo
+                      TextSpan(
+                        text:
+                            'Sabemos que dar um presente é uma forma especial de demonstrar carinho — e, para quem desejar nos abençoar dessa forma, preparamos uma lista simbólica. Os itens aparecem como “sofá”, “geladeira”, entre outros, mas na verdade representam valores que serão enviados via Pix e utilizados conforme nossas necessidades nesta nova fase.\n\n',
+                      ),
+                      TextSpan(
+                        text: '    ',
+                      ), // Indentação do terceiro parágrafo
+                      TextSpan(
+                        text:
+                            'Optamos por esse formato porque, no momento, ainda não temos uma casa definitiva e moramos em Curitiba. Como a celebração será em outra cidade, não temos como transportar presentes físicos de volta conosco, o que tornaria difícil aproveitá-los da melhor forma nesse momento.\n\n',
+                      ),
+                      TextSpan(text: '    '), // Indentação do quarto parágrafo
+                      TextSpan(
+                        text:
+                            'Se você se sentir à vontade para participar, será uma alegria. Mas, acima de tudo, o que realmente importa para nós é poder celebrar esse dia ao lado de pessoas especiais como você.\n\n',
+                      ),
+                      TextSpan(text: '    '), // Indentação da observação
+                      TextSpan(
+                        text:
+                            'Obs: Os valores são sugestões, fique à vontade para presentear com o valor que achar melhor.\n',
+                      ),
+                    ],
                   ),
                 ),
                 Text(
