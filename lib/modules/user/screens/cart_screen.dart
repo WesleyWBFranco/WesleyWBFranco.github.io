@@ -73,7 +73,7 @@ class _CartScreenState extends State<CartScreen> {
                         'Obrigado por fazer parte do nosso Sonho!',
                         style: GoogleFonts.cormorantSc(
                           color: const Color.fromARGB(255, 39, 93, 80),
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -300,7 +300,7 @@ class _CartScreenState extends State<CartScreen> {
                                       93,
                                       80,
                                     ),
-                                    fontSize: 28,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

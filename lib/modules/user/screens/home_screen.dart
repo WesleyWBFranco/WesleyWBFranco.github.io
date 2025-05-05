@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 175),
+                  const SizedBox(height: 155),
                   Text(
                     _formatDuration(_timeLeft),
                     style: GoogleFonts.rajdhani(
