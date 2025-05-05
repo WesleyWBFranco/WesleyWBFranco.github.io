@@ -78,7 +78,7 @@ class _PresentCardState extends State<PresentCard> {
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
