@@ -94144,7 +94144,7 @@ $0(){this.a.d=!1},
 $S:0}
 A.aqc.prototype={
 $1(a){var s=null
-return A.lr(s,A.hm(B.V,!0,s,A.qF(!1,s,!0,A.cX(A.b([new A.Cr(new A.LC("assets/animations/confirm.json",s,s,s,s,!1),s,s,s,s,!1,s,s,s,s,350,350,s,s,s,s,s,s,s,s),B.RB,new A.be(B.cA,A.aE("Obrigado por fazer parte do nosso Sonho!",s,s,s,A.bj().$3$color$fontSize$fontWeight(B.w,20,B.ca),s,s),s)],t.p),B.J,B.bI,B.X),s,!0,s,s,s,s,s,s,s,s,s,new A.aqb(this.a),s,s,s,s,s,s,s),B.z,B.t,0,s,s,s,s,s,B.ce),B.z,B.a8,s,s,s,s,s,s,s,s,s)},
+return A.lr(s,A.hm(B.V,!0,s,A.qF(!1,s,!0,A.cX(A.b([new A.Cr(new A.LC("assets/animations/confirm.json",s,s,s,s,!1),s,s,s,s,!1,s,s,s,s,350,350,s,s,s,s,s,s,s,s),B.RB,new A.be(B.cA,A.aE("Obrigado por fazer parte do nosso Sonho!",s,s,s,A.bj().$3$color$fontSize$fontWeight(B.w,18,B.ca),s,s),s)],t.p),B.J,B.bI,B.X),s,!0,s,s,s,s,s,s,s,s,s,new A.aqb(this.a),s,s,s,s,s,s,s),B.z,B.t,0,s,s,s,s,s,B.ce),B.z,B.a8,s,s,s,s,s,s,s,s,s)},
 $S:583}
 A.aqb.prototype={
 $0(){this.a.RB()},
@@ -94184,7 +94184,7 @@ $0(){var s=this
 A.a1S(new A.aqh(s.a,s.c,s.d,s.e),s.b,t.z)},
 $S:0}
 A.aqh.prototype={
-$1(a){var s,r=this,q=null,p=A.aE("Confirmar Presentes",q,q,q,A.bj().$3$color$fontSize$fontWeight(B.w,28,B.E),q,q),o=r.b,n=t.p,m=A.cX(A.b([B.dj,A.cX(A.b([A.aE("Pix: \xa0",q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,22,B.au),q,q),B.ci,new A.EG("08699181922",A.fh().$3$color$fontSize$fontWeight(B.w,16,B.E),q),B.Rw,A.aYN(B.Hy,A.aE("Copiar Chave",q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,14,B.E),q,q),new A.aqe(o))],n),B.J,B.fc,B.X),B.dj,A.aE("Total: R$ "+B.c.ac(r.c,2),q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,18,B.E),q,q),B.dj],n),B.J,B.W,B.bn),l=A.nf(q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.b5(B.cs,t.z_),q,q,q,q,q)
+$1(a){var s,r=this,q=null,p=A.aE("Confirmar Presentes",q,q,q,A.bj().$3$color$fontSize$fontWeight(B.w,24,B.E),q,q),o=r.b,n=t.p,m=A.cX(A.b([B.dj,A.cX(A.b([A.aE("Pix: \xa0",q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,22,B.au),q,q),B.ci,new A.EG("08699181922",A.fh().$3$color$fontSize$fontWeight(B.w,16,B.E),q),B.Rw,A.aYN(B.Hy,A.aE("Copiar Chave",q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,14,B.E),q,q),new A.aqe(o))],n),B.J,B.fc,B.X),B.dj,A.aE("Total: R$ "+B.c.ac(r.c,2),q,q,q,A.fh().$3$color$fontSize$fontWeight(B.w,18,B.E),q,q),B.dj],n),B.J,B.W,B.bn),l=A.nf(q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.b5(B.cs,t.z_),q,q,q,q,q)
 l=A.c8(A.Fw(!1,A.aE("Cancelar",q,q,q,A.bj().$3$color$fontSize$fontWeight(B.w,14,B.E),q,q),q,q,q,q,q,q,new A.aqf(a),q,l),q,130)
 s=A.amN(q,q,B.w,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q)
 return A.Ll(A.b([l,A.c8(A.Fw(!1,A.aE("Confirmar",q,q,q,A.bj().$3$color$fontSize$fontWeight(B.a8,14,B.E),q,q),q,q,q,q,q,q,new A.aqg(r.a,a,o,r.d),q,s),q,130)],n),B.a8,m,p)},
@@ -104194,8 +104194,8 @@ B.Em=new A.ng(null,null,null,B.Bv,null,null,null)
 B.Ry=new A.ek(20,20,B.Em,null)
 B.ci=new A.ek(null,10,null,null)
 B.Ac=new A.ek(null,12,null,null)
+B.Rz=new A.ek(null,155,null,null)
 B.iu=new A.ek(null,16,null,null)
-B.Rz=new A.ek(null,175,null,null)
 B.lr=new A.ek(null,20,null,null)
 B.dj=new A.ek(null,24,null,null)
 B.RA=new A.ek(null,32,null,null)
