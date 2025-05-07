@@ -93985,9 +93985,9 @@ i=A.i_(r.e,A.ku(q,q,q,q,q,q,q,q,!0,new A.d4(4,j,new A.aJ(k,1,B.v,-1)),q,q,q,q,q,
 m=A.q9(q,q,A.U(255,39,93,80),q,q,q,q,q,q,q,q,q,q,q,new A.bM(A.bO(12),B.o),q,q,q,q)
 s=t.p
 m=A.cX(A.b([l,B.iu,i,B.dj,A.c9(A.AN(!1,A.aF("Entrar",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,253,243,222),18,B.E),q,q),q,q,q,q,q,q,r.gasj(),q,m),50,1/0),B.ci,A.fM(A.b([A.hd(q,A.aF("Esqueceu a senha?",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,39,93,80),14,B.au),q,q),B.a9,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.auo(a),q,q,q,q,q,q)],s),B.J,B.db,B.X)],s),B.J,B.W,B.X)
-i=A.aF("Ainda n\xe3o tem uma conta?",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,39,93,80),14,B.au),q,q)
+i=A.aF("Para primeiro acesso, crie sua conta clicando no bot\xe3o abaixo:",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,39,93,80),20,B.au),q,q)
 l=r.a.c
-return A.kN(q,B.a8,A.f1(A.S6(A.cX(A.b([p,B.ci,o,B.fx,n,new A.be(B.eR,m,q),B.dj,A.cX(A.b([i,A.hd(q,A.aF("Cadastre-se",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,39,93,80),14,B.d0),q,q),B.a9,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,l,q,q,q,q,q,q)],s),B.J,B.bI,B.X)],s),B.J,B.bI,B.X),B.eR),q,q),q,q,q)}}
+return A.kN(q,B.a8,A.f1(A.S6(A.cX(A.b([p,B.ci,o,B.fx,n,new A.be(B.eR,m,q),B.dj,A.cX(A.b([i,A.hd(q,A.aF("Cadastre-se",q,q,q,A.bj().$3$color$fontSize$fontWeight(A.U(255,39,93,80),20,B.d0),q,q),B.a9,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,l,q,q,q,q,q,q)],s),B.J,B.bI,B.X)],s),B.J,B.bI,B.X),B.eR),q,q),q,q,q)}}
 A.auo.prototype={
 $0(){var s=A.Pd(new A.aun(),null,t.z)
 A.eS(this.a,!1).jU(s)},

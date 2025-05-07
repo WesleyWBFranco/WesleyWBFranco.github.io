@@ -180,10 +180,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Ainda não tem uma conta?',
+                    'Para primeiro acesso, crie sua conta clicando no botão abaixo:',
                     style: GoogleFonts.cormorantSc(
                       color: Color.fromARGB(255, 39, 93, 80),
-                      fontSize: 14,
+                      fontSize: 20,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -194,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       'Cadastre-se',
                       style: GoogleFonts.cormorantSc(
                         color: Color.fromARGB(255, 39, 93, 80),
-                        fontSize: 14,
+                        fontSize: 20,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
